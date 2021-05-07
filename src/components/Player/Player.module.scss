@@ -6,11 +6,23 @@
 
 .playBtn {
     display: block;
-    min-width: 64px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 4px 8px;
+    width: 80px;
     opacity: 0.5;
     transition: opacity 200ms;
 
     &.playing {
         opacity: 1;
     }
+}
+
+.sliders {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    flex-grow: 1;
+    flex-shrink: 1;
 }

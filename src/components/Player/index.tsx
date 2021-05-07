@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import shallow from "zustand/shallow";
 import classNames from "classnames";
-import styles from "./Player.module.scss";
 import useStore from "../../store";
+import styles from "./Player.module.scss";
+import Slider from "../Slider";
 
 export default function Player({ id }: { id: string }) {
     const { player, setPlayer } = useStore(
@@ -26,6 +27,11 @@ export default function Player({ id }: { id: string }) {
             ...player,
             isPlaying: !player.isPlaying,
         }));
+    const setSpeed = (speed: number) =>
+        setPlayer((player) => ({
+            ...player,
+            speed: speed,
+        }));
 
     return (
         <div className={styles.player}>
@@ -37,6 +43,16 @@ export default function Player({ id }: { id: string }) {
             >
                 {player.isPlaying ? "Pause" : "Play"}
             </button>
+
+            <div className={styles.sliders}>
+                <Slider
+                    value={player.speed}
+                    min={0.1}
+                    max={4.0}
+                    step={0.1}
+                    onChange={setSpeed}
+                />
+            </div>
         </div>
     );
 }
