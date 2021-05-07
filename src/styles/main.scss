@@ -1,0 +1,20 @@
+$clr-bg: #1a1a1a;
+$clr-fg: #ffffff;
+$clr-primary: #55afaf;
+
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: $clr-fg;
+    background-color: $clr-bg;
+    font-family: monospace;
+}
+
+.page {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    margin: 32px auto;
+    padding: 24px 32px;
+}
