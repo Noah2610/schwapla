@@ -1,0 +1,16 @@
+.player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.playBtn {
+    display: block;
+    min-width: 64px;
+    opacity: 0.5;
+    transition: opacity 200ms;
+
+    &.playing {
+        opacity: 1;
+    }
+}
