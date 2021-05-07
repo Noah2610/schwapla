@@ -6,11 +6,14 @@ export type State = StateStore & StateApi;
 
 interface StateStore {
     players: Record<PlayerId, PlayerState>;
+    audio: Record<PlayerId, AudioState>;
 }
 
 interface StateApi {
     addPlayer(): void;
     setPlayer(id: PlayerId, setter: (player: PlayerState) => PlayerState): void;
+
+    loadAudio(id: PlayerId, src: string): Promise<void>;
 }
 
 type PlayerId = string;
@@ -20,6 +23,11 @@ export interface PlayerState {
     speed: number;
 }
 
+export interface AudioState {
+    audio: HTMLAudioElement;
+    isLoading: boolean;
+}
+
 function newPlayer(): PlayerState {
     return {
         isPlaying: false,
@@ -27,15 +35,64 @@ function newPlayer(): PlayerState {
     };
 }
 
+const AUDIO_SRC = "./schwa.ogg";
+
 export default createStore<State>((set, get, _api) => ({
     players: {},
+    audio: {},
 
     addPlayer() {
+        const id = newUuid();
         set(
             (base) =>
                 produce(base, (state) => {
-                    state.players[newUuid()] = newPlayer();
+                    const player = newPlayer();
+                    state.players[id] = player;
                 }),
+            true,
+        );
+        get().loadAudio(id, AUDIO_SRC).catch(console.error);
+    },
+
+    async loadAudio(id, src) {
+        const audio = new Audio(src);
+        audio.loop = true;
+
+        set(
+            (state) => ({
+                ...state,
+                audio: {
+                    ...state.audio,
+                    [id]: {
+                        audio,
+                        isLoading: true,
+                    },
+                },
+            }),
+            true,
+        );
+
+        try {
+            await new Promise<void>((resolve, reject) => {
+                audio.load();
+                audio.onloadeddata = () => resolve();
+                audio.onerror = (err) => reject(err);
+            });
+        } catch (err) {
+            throw new Error(`Failed to load audio: ${src}`);
+        }
+
+        set(
+            (state) => ({
+                ...state,
+                audio: {
+                    ...state.audio,
+                    [id]: {
+                        audio,
+                        isLoading: false,
+                    },
+                },
+            }),
             true,
         );
     },
