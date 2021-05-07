@@ -1,4 +1,4 @@
-# SCHWA
+# Schwapla
 I was inspired to make this after watching [Tom Scott's video][tom-scott-video] on the __schwa__ sound.  
 [`schwa.ogg`] file from [Wikipedia][schwa-wikipedia].
 
