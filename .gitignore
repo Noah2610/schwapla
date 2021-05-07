@@ -1,0 +1,8 @@
+/node_modules/
+/.next/
+/.vercel/
+
+logs/
+*.log
+
+_ignore/
