@@ -1,0 +1,33 @@
+.heading {
+    font-weight: normal;
+    font-family: monospace;
+    color: var(--clr-primary);
+    letter-spacing: 4px;
+    margin: 24px 0;
+
+    &.h1 {
+        font-size: 48px;
+        letter-spacing: 16px;
+        text-shadow: 8px 6px 8px rgba(255, 255, 255, 0.5);
+    }
+
+    &.h2 {
+        font-size: 32px;
+        letter-spacing: 12px;
+        text-shadow: 4px 3px 4px rgba(255, 255, 255, 0.5);
+    }
+
+    &.h3 {
+        font-size: 24px;
+        letter-spacing: 8px;
+    }
+
+    &.h4 {
+    }
+
+    &.h5 {
+    }
+
+    &.h6 {
+    }
+}
