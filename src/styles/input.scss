@@ -1,0 +1,17 @@
+.input {
+    font-family: monospace;
+    font-size: 14px;
+    opacity: 0.8;
+    transition: opacity 200ms;
+
+    &:hover,
+    &:focus,
+    &:active {
+        opacity: 1;
+    }
+
+    &:focus,
+    &:active {
+        outline: none;
+    }
+}
