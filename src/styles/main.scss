@@ -48,6 +48,11 @@ body {
     }
 }
 
+.btnGroup {
+    display: flex;
+    gap: 8px;
+}
+
 .input {
     font-family: monospace;
     font-size: 14px;

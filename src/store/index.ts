@@ -12,6 +12,8 @@ interface StateApi {
     addPlayer(audioSrc?: string): void;
     setPlayer(id: PlayerId, setter: PlayerSetter): void;
     getPlayer(id: PlayerId): PlayerState | undefined;
+    playAllPlayers(): void;
+    stopAllPlayers(): void;
 }
 
 type PlayerId = string;
@@ -57,17 +59,21 @@ function newPlayer(
         play() {
             set((base) =>
                 produce(base, (player) => {
-                    player.isPlaying = true;
-                    player.audio.audio.play();
+                    if (!player.isPlaying) {
+                        player.isPlaying = true;
+                        player.audio.audio.play();
+                    }
                 }),
             );
         },
         stop() {
             set((base) =>
                 produce(base, (player) => {
-                    player.isPlaying = false;
-                    player.audio.audio.pause();
-                    player.audio.audio.currentTime = 0;
+                    if (player.isPlaying) {
+                        player.isPlaying = false;
+                        player.audio.audio.pause();
+                        player.audio.audio.currentTime = 0;
+                    }
                 }),
             );
         },
@@ -166,5 +172,17 @@ export default createStore<State>((set, get, _api) => ({
 
     getPlayer(id) {
         return get().players[id];
+    },
+
+    playAllPlayers() {
+        for (const player of Object.values(get().players)) {
+            player.play();
+        }
+    },
+
+    stopAllPlayers() {
+        for (const player of Object.values(get().players)) {
+            player.stop();
+        }
     },
 }));
