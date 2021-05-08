@@ -47,10 +47,16 @@ function newPlayer(
     set: (setter: PlayerSetter) => void,
     get: () => PlayerState | undefined,
 ): PlayerState {
+    const DEFAULT_VOLUME = 0.5;
+    const DEFAULT_SPEED = 1.0;
+
+    audio.volume = DEFAULT_VOLUME;
+    audio.playbackRate = DEFAULT_SPEED;
+
     const player: PlayerState = {
         isPlaying: false,
-        volume: 0.5,
-        speed: 1.0,
+        volume: DEFAULT_VOLUME,
+        speed: DEFAULT_SPEED,
         audio: {
             audio,
             isLoading: true,
