@@ -6,7 +6,7 @@ export interface SliderProps {
     min: number;
     max: number;
     step: number;
-    onChange?: (value: number) => void;
+    onChange: (value: number) => void;
 }
 
 export default function Slider({
@@ -24,15 +24,12 @@ export default function Slider({
             min={min}
             max={max}
             step={step}
-            onChange={
-                onChange &&
-                ((e) => {
-                    const newValue = parseFloat(e.currentTarget.value);
-                    if (newValue || newValue === 0) {
-                        onChange(newValue);
-                    }
-                })
-            }
+            onChange={(e) => {
+                const newValue = parseFloat(e.currentTarget.value);
+                if (newValue || newValue === 0) {
+                    onChange(newValue);
+                }
+            }}
         />
     );
 }

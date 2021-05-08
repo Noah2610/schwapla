@@ -36,7 +36,7 @@ export default function Player({ id }: { id: string }) {
                 {player.isPlaying ? "Stop" : "Play"}
             </button>
 
-            <div className={styles.sliders}>
+            <div className={styles.playerValues}>
                 {playerValueSettings.map((settings) => (
                     <PlayerValue
                         key={settings.name}

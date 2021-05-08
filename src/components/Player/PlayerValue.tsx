@@ -44,20 +44,17 @@ export default function PlayerValue({
                         min={min}
                         max={max}
                         step={step}
-                        onChange={
-                            onChange &&
-                            ((e) => {
-                                const value = e.currentTarget.value;
-                                const newValue = clamp(
-                                    value === "" ? 0 : parseFloat(value),
-                                    min,
-                                    max,
-                                );
-                                if (newValue || newValue === 0) {
-                                    onChange(newValue);
-                                }
-                            })
-                        }
+                        onChange={(e) => {
+                            const value = e.currentTarget.value;
+                            const newValue = clamp(
+                                value === "" ? 0 : parseFloat(value),
+                                min,
+                                max,
+                            );
+                            if (newValue || newValue === 0) {
+                                onChange(newValue);
+                            }
+                        }}
                     />
                 </div>
             </div>
