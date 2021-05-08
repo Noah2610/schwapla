@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import shallow from "zustand/shallow";
 import classNames from "classnames";
 import useStore from "../../store";
@@ -6,46 +5,17 @@ import styles from "./Player.module.scss";
 import Slider from "../Slider";
 
 export default function Player({ id }: { id: string }) {
-    const { player, setPlayer, audio } = useStore(
-        useCallback(
-            (state) => ({
-                player: state.players[id],
-                setPlayer: state.setPlayer.bind(null, id),
-                audio: state.audio[id],
-            }),
-            [id],
-        ),
-        ({ player: a, audio: audioA }, { player: b, audio: audioB }) =>
-            shallow(a, b) && audioA?.isLoading === audioB?.isLoading,
+    const { player } = useStore(
+        (state) => ({
+            player: state.getPlayer(id),
+        }),
+        ({ player: a }, { player: b }) => shallow(a, b),
     );
 
-    if (!player || !audio) {
+    if (!player) {
         console.error(`Player or audio with ID "${id}" does not exist`);
         return null;
     }
-
-    const togglePlay = () =>
-        setPlayer((player) => {
-            const isPlaying = !player.isPlaying;
-            if (isPlaying) {
-                audio.audio.play();
-            } else {
-                audio.audio.pause();
-                audio.audio.currentTime = 0;
-            }
-            return {
-                ...player,
-                isPlaying,
-            };
-        });
-
-    const setSpeed = (speed: number) => {
-        setPlayer((player) => ({
-            ...player,
-            speed,
-        }));
-        audio.audio.playbackRate = speed;
-    };
 
     return (
         <div className={styles.player}>
@@ -57,10 +27,10 @@ export default function Player({ id }: { id: string }) {
                         [styles.playing!]: player.isPlaying,
                     },
                     {
-                        [styles.loading!]: audio.isLoading,
+                        [styles.loading!]: player.audio.isLoading,
                     },
                 )}
-                onClick={togglePlay}
+                onClick={player.togglePlay}
             >
                 {player.isPlaying ? "Stop" : "Play"}
             </button>
@@ -71,7 +41,7 @@ export default function Player({ id }: { id: string }) {
                     min={0.1}
                     max={4.0}
                     step={0.1}
-                    onChange={setSpeed}
+                    onChange={player.setSpeed}
                 />
             </div>
         </div>

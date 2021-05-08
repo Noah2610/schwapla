@@ -6,14 +6,12 @@ export type State = StateStore & StateApi;
 
 interface StateStore {
     players: Record<PlayerId, PlayerState>;
-    audio: Record<PlayerId, AudioState>;
 }
 
 interface StateApi {
-    addPlayer(): void;
-    setPlayer(id: PlayerId, setter: (player: PlayerState) => PlayerState): void;
-
-    loadAudio(id: PlayerId, src: string): Promise<void>;
+    addPlayer(audioSrc?: string): void;
+    setPlayer(id: PlayerId, setter: PlayerSetter): void;
+    getPlayer(id: PlayerId): PlayerState | undefined;
 }
 
 type PlayerId = string;
@@ -21,80 +19,119 @@ type PlayerId = string;
 export interface PlayerState {
     isPlaying: boolean;
     speed: number;
+    audio: PlayerAudioState;
+
+    play(): void;
+    stop(): void;
+    togglePlay(): void;
+    setSpeed(speed: number): void;
 }
 
-export interface AudioState {
+export interface PlayerAudioState {
     audio: HTMLAudioElement;
     isLoading: boolean;
-}
-
-function newPlayer(): PlayerState {
-    return {
-        isPlaying: false,
-        speed: 1.0,
-    };
+    loadError?: string;
 }
 
 const AUDIO_SRC = "./schwa.ogg";
 
+type PlayerSetter = (player: PlayerState) => PlayerState;
+
+function newPlayer(
+    audio: HTMLAudioElement,
+    set: (setter: PlayerSetter) => void,
+    get: () => PlayerState | undefined,
+): PlayerState {
+    const player: PlayerState = {
+        isPlaying: false,
+        speed: 1.0,
+        audio: {
+            audio,
+            isLoading: true,
+            loadError: undefined,
+        },
+
+        play() {
+            set((base) =>
+                produce(base, (player) => {
+                    player.isPlaying = true;
+                    player.audio.audio.play();
+                }),
+            );
+        },
+        stop() {
+            set((base) =>
+                produce(base, (player) => {
+                    player.isPlaying = false;
+                    player.audio.audio.pause();
+                    player.audio.audio.currentTime = 0;
+                }),
+            );
+        },
+        togglePlay() {
+            const player = get();
+            if (player) {
+                if (player.isPlaying) {
+                    player.stop();
+                } else {
+                    player.play();
+                }
+            }
+        },
+        setSpeed(speed) {
+            set((base) =>
+                produce(base, (player) => {
+                    player.speed = speed;
+                    player.audio.audio.playbackRate = speed;
+                }),
+            );
+        },
+    };
+
+    return player;
+}
+
 export default createStore<State>((set, get, _api) => ({
     players: {},
-    audio: {},
 
-    addPlayer() {
+    addPlayer(audioSrc = AUDIO_SRC) {
         const id = newUuid();
-        set(
-            (base) =>
-                produce(base, (state) => {
-                    const player = newPlayer();
-                    state.players[id] = player;
-                }),
-            true,
-        );
-        get().loadAudio(id, AUDIO_SRC).catch(console.error);
-    },
-
-    async loadAudio(id, src) {
-        const audio = new Audio(src);
+        const audio = new Audio(audioSrc);
         audio.loop = true;
 
-        set(
-            (state) => ({
-                ...state,
+        audio.load();
+        audio.onloadeddata = () =>
+            get().setPlayer(id, (player) => ({
+                ...player,
                 audio: {
-                    ...state.audio,
-                    [id]: {
-                        audio,
-                        isLoading: true,
-                    },
+                    audio,
+                    isLoading: false,
+                    loadError: undefined,
                 },
-            }),
-            true,
-        );
-
-        try {
-            await new Promise<void>((resolve, reject) => {
-                audio.load();
-                audio.onloadeddata = () => resolve();
-                audio.onerror = (err) => reject(err);
-            });
-        } catch (err) {
-            throw new Error(`Failed to load audio: ${src}`);
-        }
-
-        set(
-            (state) => ({
-                ...state,
+            }));
+        audio.onerror = (err) =>
+            get().setPlayer(id, (player) => ({
+                ...player,
                 audio: {
-                    ...state.audio,
-                    [id]: {
-                        audio,
-                        isLoading: false,
-                    },
+                    audio,
+                    isLoading: false,
+                    loadError:
+                        typeof err === "string"
+                            ? err
+                            : `Error loading audio ${audioSrc}`,
                 },
-            }),
-            true,
-        );
+            }));
+
+        const setPlayer = (setter: PlayerSetter) => get().setPlayer(id, setter);
+        const getPlayer = () => get().getPlayer(id);
+        const player = newPlayer(audio, setPlayer, getPlayer);
+
+        set((state) => ({
+            players: {
+                ...state.players,
+                [id]: player,
+            },
+        }));
     },
 
     setPlayer(id, setter) {
@@ -103,7 +140,9 @@ export default createStore<State>((set, get, _api) => ({
                 produce(base, (state) => {
                     const player = state.players[id];
                     if (player) {
-                        state.players[id] = setter(player);
+                        (state.players[id] as PlayerState) = setter(
+                            player as PlayerState,
+                        );
                     } else {
                         console.error(
                             `Tried to call \`setPlayer\` with ID "${id}" which doesn't exist`,
@@ -112,5 +151,9 @@ export default createStore<State>((set, get, _api) => ({
                 }),
             true,
         );
+    },
+
+    getPlayer(id) {
+        return get().players[id];
     },
 }));

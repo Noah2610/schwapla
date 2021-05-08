@@ -21,7 +21,7 @@ export default function App() {
             </div>
 
             <div>
-                <button className="btn" onClick={addPlayer}>
+                <button className="btn" onClick={() => addPlayer()}>
                     Add Player
                 </button>
             </div>
