@@ -22,13 +22,14 @@
     }
 }
 
-.sliders {
+.playerValues {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: stretch;
     flex-grow: 1;
     flex-shrink: 1;
+    gap: 4px;
 }
 
 @keyframes loadingFade {
