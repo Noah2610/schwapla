@@ -12,6 +12,7 @@ interface StateApi {
     addPlayer(audioSrc?: string): void;
     setPlayer(id: PlayerId, setter: PlayerSetter): void;
     getPlayer(id: PlayerId): PlayerState | undefined;
+    removePlayer(id: PlayerId): void;
     playAllPlayers(): void;
     stopAllPlayers(): void;
 }
@@ -172,6 +173,16 @@ export default createStore<State>((set, get, _api) => ({
 
     getPlayer(id) {
         return get().players[id];
+    },
+
+    removePlayer(id) {
+        set(
+            (base) =>
+                produce(base, (state) => {
+                    delete state.players[id];
+                }),
+            true,
+        );
     },
 
     playAllPlayers() {

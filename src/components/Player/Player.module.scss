@@ -4,21 +4,28 @@
     gap: 16px;
 }
 
-.playBtn {
+.playerBtn {
     display: block;
     flex-grow: 0;
     flex-shrink: 0;
     padding: 4px 8px;
     width: 80px;
-    opacity: 0.5;
-    transition: opacity 200ms;
 
-    &.playing {
-        opacity: 1;
+    &.playBtn {
+        opacity: 0.5;
+
+        &.playing {
+            opacity: 1;
+        }
+
+        &.loading {
+            animation: loadingFade 500ms ease-in-out infinite alternate;
+        }
     }
 
-    &.loading {
-        animation: loadingFade 500ms ease-in-out infinite alternate;
+    &.removeBtn {
+        font-size: 14px;
+        letter-spacing: 2px;
     }
 }
 

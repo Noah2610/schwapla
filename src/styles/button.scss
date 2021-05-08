@@ -9,7 +9,13 @@
     text-transform: uppercase;
     letter-spacing: 4px;
     cursor: pointer;
-    transition: text-shadow 200ms, box-shadow 200ms, transform 200ms;
+    transition: text-shadow 200ms, box-shadow 200ms, transform 200ms,
+        opacity 200ms;
+
+    &.btn--alternate {
+        background-color: transparent;
+        border: var(--clr-primary) solid 1px;
+    }
 
     &:hover {
         text-shadow: 0 0 4px #000000, 4px 3px 2px #000000;
@@ -27,4 +33,8 @@
 .btnGroup {
     display: flex;
     gap: 8px;
+
+    &.btnGroup--horz {
+        flex-direction: column;
+    }
 }

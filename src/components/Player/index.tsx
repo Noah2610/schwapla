@@ -6,9 +6,10 @@ import PlayerValue from "./PlayerValue";
 import playerValueSettings from "./playerValueSettings";
 
 export default function Player({ id }: { id: string }) {
-    const { player } = useStore(
+    const { player, removePlayer } = useStore(
         (state) => ({
             player: state.getPlayer(id),
+            removePlayer: state.removePlayer.bind(null, id),
         }),
         ({ player: a }, { player: b }) => shallow(a, b),
     );
@@ -20,21 +21,35 @@ export default function Player({ id }: { id: string }) {
 
     return (
         <div className={styles.player}>
-            <button
-                className={classNames(
-                    "btn",
-                    styles.playBtn,
-                    {
-                        [styles.playing!]: player.isPlaying,
-                    },
-                    {
-                        [styles.loading!]: player.audio.isLoading,
-                    },
-                )}
-                onClick={player.togglePlay}
-            >
-                {player.isPlaying ? "Stop" : "Play"}
-            </button>
+            <div className="btnGroup btnGroup--horz">
+                <button
+                    className={classNames(
+                        "btn",
+                        styles.playerBtn,
+                        styles.playBtn,
+                        {
+                            [styles.playing!]: player.isPlaying,
+                        },
+                        {
+                            [styles.loading!]: player.audio.isLoading,
+                        },
+                    )}
+                    onClick={player.togglePlay}
+                >
+                    {player.isPlaying ? "Stop" : "Play"}
+                </button>
+                <button
+                    className={classNames(
+                        "btn",
+                        "btn--alternate",
+                        styles.playerBtn,
+                        styles.removeBtn,
+                    )}
+                    onClick={removePlayer}
+                >
+                    Remove
+                </button>
+            </div>
 
             <div className={styles.playerValues}>
                 {playerValueSettings.map((settings) => (
