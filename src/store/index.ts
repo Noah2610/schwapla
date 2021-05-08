@@ -18,12 +18,14 @@ type PlayerId = string;
 
 export interface PlayerState {
     isPlaying: boolean;
+    volume: number;
     speed: number;
     audio: PlayerAudioState;
 
     play(): void;
     stop(): void;
     togglePlay(): void;
+    setVolume(volume: number): void;
     setSpeed(speed: number): void;
 }
 
@@ -44,6 +46,7 @@ function newPlayer(
 ): PlayerState {
     const player: PlayerState = {
         isPlaying: false,
+        volume: 0.5,
         speed: 1.0,
         audio: {
             audio,
@@ -77,6 +80,14 @@ function newPlayer(
                     player.play();
                 }
             }
+        },
+        setVolume(volume) {
+            set((base) =>
+                produce(base, (player) => {
+                    player.volume = volume;
+                    player.audio.audio.volume = volume;
+                }),
+            );
         },
         setSpeed(speed) {
             set((base) =>
