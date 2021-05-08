@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import shallow from "zustand/shallow";
 import styles from "./App.module.scss";
 import useStore from "../../store";
@@ -13,6 +14,12 @@ export default function App() {
         }),
         ({ playerIds: a }, { playerIds: b }) => shallow(a, b),
     );
+
+    useEffect(() => {
+        if (playerIds.length === 0) {
+            addPlayer();
+        }
+    }, []);
 
     return (
         <div className={styles.appRoot}>
