@@ -17,7 +17,6 @@ body {
 
 .page {
     display: block;
-    width: 100%;
     max-width: 640px;
     margin: 32px auto;
     padding: 24px 32px;
@@ -46,5 +45,23 @@ body {
     &:active {
         outline: none;
         text-shadow: 0 0 4px #000000, 4px 3px 2px #000000;
+    }
+}
+
+.input {
+    font-family: monospace;
+    font-size: 14px;
+    opacity: 0.8;
+    transition: opacity 200ms;
+
+    &:hover,
+    &:focus,
+    &:active {
+        opacity: 1;
+    }
+
+    &:focus,
+    &:active {
+        outline: none;
     }
 }

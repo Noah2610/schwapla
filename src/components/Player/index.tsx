@@ -2,7 +2,7 @@ import shallow from "zustand/shallow";
 import classNames from "classnames";
 import useStore from "../../store";
 import styles from "./Player.module.scss";
-import Slider from "../Slider";
+import PlayerValue from "./PlayerValue";
 
 export default function Player({ id }: { id: string }) {
     const { player } = useStore(
@@ -36,7 +36,9 @@ export default function Player({ id }: { id: string }) {
             </button>
 
             <div className={styles.sliders}>
-                <Slider
+                <PlayerValue
+                    id={id}
+                    label="Speed"
                     value={player.speed}
                     min={0.1}
                     max={4.0}

@@ -1,4 +1,13 @@
+import classNames from "classnames";
 import styles from "./Slider.module.scss";
+
+export interface SliderProps {
+    value: number;
+    min: number;
+    max: number;
+    step: number;
+    onChange?: (value: number) => void;
+}
 
 export default function Slider({
     value,
@@ -6,32 +15,24 @@ export default function Slider({
     max,
     step,
     onChange,
-}: {
-    value: number;
-    min: number;
-    max: number;
-    step: number;
-    onChange?: (value: number) => void;
-}) {
+}: SliderProps) {
     return (
-        <div>
-            <input
-                className={styles.slider}
-                type="range"
-                value={value}
-                min={min}
-                max={max}
-                step={step}
-                onChange={
-                    onChange &&
-                    ((e) => {
-                        const newValue = parseFloat(e.currentTarget.value);
-                        if (newValue || newValue === 0) {
-                            onChange(newValue);
-                        }
-                    })
-                }
-            />
-        </div>
+        <input
+            className={classNames("input", styles.slider)}
+            type="range"
+            value={value}
+            min={min}
+            max={max}
+            step={step}
+            onChange={
+                onChange &&
+                ((e) => {
+                    const newValue = parseFloat(e.currentTarget.value);
+                    if (newValue || newValue === 0) {
+                        onChange(newValue);
+                    }
+                })
+            }
+        />
     );
 }
