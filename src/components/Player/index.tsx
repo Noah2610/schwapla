@@ -21,7 +21,16 @@ export default function Player({ id }: { id: string }) {
 
     return (
         <div className={styles.player}>
-            <div className="btnGroup btnGroup--horz">
+            <div className="btnGroup btnGroup--vert">
+                {player.audio.name && (
+                    <span
+                        className={styles.audioName}
+                        title={player.audio.name}
+                    >
+                        {player.audio.name}
+                    </span>
+                )}
+
                 <button
                     className={classNames(
                         "btn",

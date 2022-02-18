@@ -34,6 +34,7 @@ export interface PlayerState {
 
 export interface PlayerAudioState {
     audio: HTMLAudioElement;
+    name?: string;
     isLoading: boolean;
     loadError?: string;
 }
@@ -53,12 +54,15 @@ function newPlayer(
     audio.volume = DEFAULT_VOLUME;
     audio.playbackRate = DEFAULT_SPEED;
 
+    const name = audio.src.split("/").pop();
+
     const player: PlayerState = {
         isPlaying: false,
         volume: DEFAULT_VOLUME,
         speed: DEFAULT_SPEED,
         audio: {
             audio,
+            name,
             isLoading: true,
             loadError: undefined,
         },
@@ -128,6 +132,7 @@ export default createStore<State>((set, get, _api) => ({
             get().setPlayer(id, (player) => ({
                 ...player,
                 audio: {
+                    ...player.audio,
                     audio,
                     isLoading: false,
                     loadError: undefined,

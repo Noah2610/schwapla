@@ -1,4 +1,6 @@
 .player {
+    --left-item-width: 80px;
+
     display: flex;
     align-items: center;
     gap: 16px;
@@ -9,7 +11,7 @@
     flex-grow: 0;
     flex-shrink: 0;
     padding: 4px 8px;
-    width: 80px;
+    width: var(--left-item-width);
 
     &.playBtn {
         opacity: 0.5;
@@ -37,6 +39,18 @@
     flex-grow: 1;
     flex-shrink: 1;
     gap: 4px;
+}
+
+.audioName {
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: var(--left-item-width);
+
+    font-size: 12px;
+    letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @keyframes loadingFade {
