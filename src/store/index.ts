@@ -30,6 +30,7 @@ export interface PlayerState {
     togglePlay(): void;
     setVolume(volume: number): void;
     setSpeed(speed: number): void;
+    setAudioSrc(src: string, name?: string): void;
 }
 
 export interface PlayerAudioState {
@@ -51,10 +52,36 @@ function newPlayer(
     const DEFAULT_VOLUME = 0.5;
     const DEFAULT_SPEED = 1.0;
 
+    const name = audio.src.split("/").pop();
+
     audio.volume = DEFAULT_VOLUME;
     audio.playbackRate = DEFAULT_SPEED;
+    audio.loop = true;
 
-    const name = audio.src.split("/").pop();
+    audio.onloadeddata = () =>
+        set((player) => ({
+            ...player,
+            audio: {
+                ...player.audio,
+                audio,
+                isLoading: false,
+                loadError: undefined,
+            },
+        }));
+    audio.onerror = (err) =>
+        set((player) => ({
+            ...player,
+            audio: {
+                audio,
+                isLoading: false,
+                loadError:
+                    typeof err === "string"
+                        ? err
+                        : `Error loading audio ${audio.src}`,
+            },
+        }));
+
+    audio.load();
 
     const player: PlayerState = {
         isPlaying: false,
@@ -114,6 +141,16 @@ function newPlayer(
                 }),
             );
         },
+        setAudioSrc(src, name) {
+            set((base) =>
+                produce(base, (player) => {
+                    player.audio.audio.src = src;
+                    player.audio.name = name || src.split("/").pop();
+                    player.audio.isLoading = true;
+                    player.audio.loadError = undefined;
+                }),
+            );
+        },
     };
 
     return player;
@@ -125,31 +162,6 @@ export default createStore<State>((set, get, _api) => ({
     addPlayer(audioSrc = AUDIO_SRC) {
         const id = newUuid();
         const audio = new Audio(audioSrc);
-        audio.loop = true;
-
-        audio.load();
-        audio.onloadeddata = () =>
-            get().setPlayer(id, (player) => ({
-                ...player,
-                audio: {
-                    ...player.audio,
-                    audio,
-                    isLoading: false,
-                    loadError: undefined,
-                },
-            }));
-        audio.onerror = (err) =>
-            get().setPlayer(id, (player) => ({
-                ...player,
-                audio: {
-                    audio,
-                    isLoading: false,
-                    loadError:
-                        typeof err === "string"
-                            ? err
-                            : `Error loading audio ${audioSrc}`,
-                },
-            }));
 
         const setPlayer = (setter: PlayerSetter) => get().setPlayer(id, setter);
         const getPlayer = () => get().getPlayer(id);

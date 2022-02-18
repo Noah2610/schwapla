@@ -19,10 +19,6 @@
         &.playing {
             opacity: 1;
         }
-
-        &.loading {
-            animation: loadingFade 500ms ease-in-out infinite alternate;
-        }
     }
 
     &.removeBtn {
@@ -41,16 +37,28 @@
     gap: 4px;
 }
 
-.audioName {
+.audio {
     display: block;
     flex-grow: 0;
     flex-shrink: 0;
     width: var(--left-item-width);
 
-    font-size: 12px;
-    letter-spacing: 1px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    & .audioName {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 1px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+    }
+
+    & .audioInput {
+        display: none;
+    }
+}
+
+.loading {
+    animation: loadingFade 500ms ease-in-out infinite alternate;
 }
 
 @keyframes loadingFade {
