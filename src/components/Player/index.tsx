@@ -29,8 +29,6 @@ export default function Player({ id }: { id: string }) {
                         styles.playBtn,
                         {
                             [styles.playing!]: player.isPlaying,
-                        },
-                        {
                             [styles.loading!]: player.audio.isLoading,
                         },
                     )}
